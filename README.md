@@ -102,6 +102,10 @@ You can access the environment variable inside the theme files with `getenv "NOD
 
 All tasks starting with _build_ set the environment variable to `production` - the other will set it to `development`.
 
+## Deploy to IONOS
+
+[![Ship to IONOS](ship-to-ionos.png)](https://buildwith.ionos.com/setup?repo=https://github.com/buildwith-ionos/victor-hugo)
+
 ## Deploying to Netlify
 
 - Push your clone to your own GitHub repository.
