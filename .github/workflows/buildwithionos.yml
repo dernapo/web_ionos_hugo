@@ -1,0 +1,43 @@
+name: Buildwith-IONOS
+
+on: [push]
+
+jobs:
+  build-with-ionos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+      - name: Get Ionos Project data
+        uses: buildwith-ionos/retrieve-project-info-action@v0.1.2
+        id: project
+        with:
+          api-key: ${{ secrets.IONOS_API_KEY }}
+          project: dff593bc-fb25-4aa8-a6d2-04703bcf90ca
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.74.3'
+          extended: true
+      - name: Setup Node.js 12.16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.x
+      - name: Prepare Project build environment
+        run: |
+          npm install --global yarn
+          yarn install --frozen-lockfile
+      - name: Build Node project
+        run: yarn build
+        env:
+          CI: true
+          SITE_URL: ${{ steps.project.outputs.site-url }}
+      - name: Deploy to IONOS
+        uses: buildwith-ionos/deploy-to-ionos-action@v0.1.2
+        with:
+          remote-host: ${{ steps.project.outputs.remote-host }}
+          project: dff593bc-fb25-4aa8-a6d2-04703bcf90ca
+          api-key: ${{ secrets.IONOS_API_KEY }}
+          dist-folder: dist
